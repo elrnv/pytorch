@@ -789,8 +789,7 @@ class build_ext(setuptools.command.build_ext.build_ext):
         ):
             os.environ["CC"] = str(os.environ["CC"])
 
-        # It's an old-style class in Python 2.7...
-        setuptools.command.build_ext.build_ext.run(self)
+        super().run()
 
         if IS_DARWIN:
             self._embed_libomp()
@@ -857,10 +856,10 @@ class build_ext(setuptools.command.build_ext.build_ext):
                     os.makedirs(dst_dir)
                 self.copy_file(src, dst)
 
-        setuptools.command.build_ext.build_ext.build_extensions(self)
+        super().build_extensions()
 
     def get_outputs(self):
-        outputs = setuptools.command.build_ext.build_ext.get_outputs(self)
+        outputs = super().get_outputs()
         outputs.append(os.path.join(self.build_lib, "caffe2"))
         report(f"setup.py::get_outputs returning {outputs}")
         return outputs
@@ -965,8 +964,7 @@ else:
 
 
 class install(setuptools.command.install.install):
-    def run(self):
-        super().run()
+    pass
 
 
 class clean(setuptools.Command):
@@ -979,7 +977,6 @@ class clean(setuptools.Command):
         pass
 
     def run(self):
-        import glob
         import re
 
         with open(".gitignore") as f:
